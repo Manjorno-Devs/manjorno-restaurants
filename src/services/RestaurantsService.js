@@ -7,15 +7,11 @@ class RestaurantsService {
     constructor(){}
 
     async CreateRestaurant(name, pictures, contacts, locationLink) {
-
-
-
+        Restaurants.create({name, pictures, contacts, locationLink});
     }
 
-    async AddMenuItems(name, description, price, pictures) {
-
-
-
+    async AddMenuItems(restaurantId, name, description, price, pictures) {
+        
     }
 
     async FindRestaurant(name, description, price, pictures) {

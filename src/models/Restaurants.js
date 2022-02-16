@@ -9,16 +9,11 @@ export default Restaurants = mongoose.Model('Restaurants', new mongoose.Schema({
         type: Array,
         default: new Array() 
     },
-    contacts: {
-        type: Object,
-        default: new Object()
+    description: {
+        type: String
     },
-    locationLink:{
-        type: String,
-        required: true
-    },
-    menuItems: {
+    price: {
         type: Object,
-        default: new Object()
+        default: new Array()
     }
 }));
