@@ -34,11 +34,13 @@ amqp.connect(process.env.AMQP_CONNECTION_URL , (connectionError, connection) => 
             channel.assertQueue(queueName, { durable: false });
         });
 
-    });
-    mongoose.connect(process.env.MONGODB_CONNECTION_URL, () => {
-        console.log("Connected to DB");
-        app.listen(port, () => {
-            console.log(`Microservice is up at port ${port}`);
+        mongoose.connect(process.env.MONGODB_CONNECTION_URL, () => {
+            console.log("Connected to DB");
+            app.listen(port, () => {
+                console.log(`Microservice is up at port ${port}`);
+            });
         });
+
     });
+    
 });
