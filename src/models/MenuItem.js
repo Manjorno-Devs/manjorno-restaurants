@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-export default MenuItem = mongoose.Model('Restaurants', new mongoose.Schema({
+export default MenuItem = mongoose.Model('MenuItem', new mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -9,16 +9,11 @@ export default MenuItem = mongoose.Model('Restaurants', new mongoose.Schema({
         type: Array,
         default: new Array() 
     },
-    contacts: {
+    description: {
+        type: String
+    },
+    price: {
         type: Object,
-        default: new Object()
-    },
-    locationLink:{
-        type: String,
-        required: true
-    },
-    menuItems: {
-        type: Array,
         default: new Array()
     }
 }));

@@ -21,3 +21,5 @@ class MenuItemsService {
     }
 
 }
+
+export default MenuItemsService;
