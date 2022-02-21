@@ -14,16 +14,19 @@ class RestaurantsService {
     }
 
     async FindRestaurant(_id, name) {
-        let response = { "code": 200, "result":"" };
         if (_id) {
             _id = mongoose.Types.ObjectId(_id); 
+            const search = await Restaurants.find({_id});
+            return search;
         }
-        const parameters = _id || name;
-        const search = await Restaurants.find({parameters});
-        console.log(parameters);
-        response.code = 200;
-        response.result = search;
-        return response;
+        const query = {
+            "name": {
+                "$regex": name, 
+                "$options": "i"
+            }
+        };
+        const search = await Restaurants.find(query);
+        return search;
     }
 
     async UpdateRestaurantInfo(_id, name, pictures, contacts, locationLink) {

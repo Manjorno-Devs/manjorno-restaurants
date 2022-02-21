@@ -33,7 +33,7 @@ class RestaurantController{
 
             await userRestaurant.CreateRelation(userId, restaurantId, username, "manager");
 
-            const message = restaurantCreation;
+            const message = "User created successfully!";
             res.status(200).json({message});
         } catch (error) {
             error = error.message;
@@ -42,12 +42,21 @@ class RestaurantController{
     }
 
     async FindRestaurant(req, res) {
-        const {id, name} = req.query;
+        try {
+            const {id, name} = req.query;
 
-        const searchResult = await restaurant.FindRestaurant(id, name);
+            const searchResult = await restaurant.FindRestaurant(id, name);
+            if (searchResult.length === 0) {
+                const error = "Restaurant Not Found"
+                res.status(404).json({error});
+                return;
+            }
 
-        const result = searchResult.result;
-        res.status(searchResult.code).json({result});
+            res.status(200).json({searchResult});
+        } catch (error) {
+            error = error.message;
+            res.status(500).json({error});
+        }
     }
 
 }
