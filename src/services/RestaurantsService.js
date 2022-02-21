@@ -4,15 +4,13 @@ import Restaurants from '../models/Restaurant.js';
 
 class RestaurantsService {
     async CreateRestaurant(name, contacts, locationLink) {
-        const checkIfExists = await Restaurants.findOne({name});
-        let response = { "code": 200, "message":"Restaurant registered successfully!" };
+        let checkIfExists = await Restaurants.findOne({name});
         if (checkIfExists) {
-            response.code = 409;
-            response.message = "Restaurant already exists!"
-            return response;
+            return "Restaurant already exists";
         }
-        Restaurants.create({name, contacts, locationLink});
-        return response;
+        const _id = mongoose.Types.ObjectId();
+        Restaurants.create({_id, name, contacts, locationLink});
+        return _id;
     }
 
     async FindRestaurant(_id, name) {
@@ -23,11 +21,6 @@ class RestaurantsService {
         const parameters = _id || name;
         const search = await Restaurants.find({parameters});
         console.log(parameters);
-        // if (search.length === 0) {
-        //     response.code = 404;
-        //     response.result = "Restaurant not found!";
-        //     return response;
-        // }
         response.code = 200;
         response.result = search;
         return response;

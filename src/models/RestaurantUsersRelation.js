@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-export default RestaurantUsers = mongoose.model('RestaurantUserRelation', new mongoose.Schema({
+const RestaurantUsers = mongoose.model('RestaurantUserRelation', new mongoose.Schema({
     userId: {
         type: String,
         required: true
@@ -27,3 +27,5 @@ export default RestaurantUsers = mongoose.model('RestaurantUserRelation', new mo
         default: true
     }
 }));
+
+export default RestaurantUsers;
