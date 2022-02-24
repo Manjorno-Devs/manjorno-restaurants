@@ -15,7 +15,7 @@ const RestaurantUsers = mongoose.model('RestaurantUserRelation', new mongoose.Sc
     },
     position: {
         type: String,
-        enum: ['employee', 'manager'],
+        enum: ['employee', 'manager', 'owner'],
         required: true,
     },
     dateTimeAdded: {

@@ -14,5 +14,7 @@ router.get('/find', async (req, res) => restaurantController.FindRestaurant(req,
 router.use(keycloak.middleware());
 
 router.post('/create', keycloak.protect(), async (req, res) => restaurantController.CreateRestaurant(req, res));
+router.put('/update', keycloak.protect(), async (req, res) => restaurantController.UpdateRestaurant(req, res));
+router.delete('/delete', keycloak.protect(), async (req, res) => restaurantController.DeleteRestaurant(req, res));
 
 export default router;
