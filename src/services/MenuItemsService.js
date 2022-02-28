@@ -7,13 +7,13 @@ import RestaurantUsers from '../models/RestaurantUsersRelation.js';
 class MenuItemsService {
 
     async AddMenuItem(userId, restaurantId, name, description, price, pictures) {
-        const restaurant = await Restaurant.findById(restaurantId);
-        if (!restaurant) {
-            return "Restaurant does not exist!";
-        }
         const userRelation = await RestaurantUsers.findOne({userId, restaurantId});
         if (!userRelation || (userRelation.position !== "owner" & userRelation.position !== "manager")) {
             return "User does not have any relation with the given restaurant!";
+        }
+        const restaurant = await Restaurant.findById(restaurantId);
+        if (!restaurant) {
+            return "Restaurant does not exist!";
         }
         MenuItem.create({restaurantId, name, description, price, pictures});
         return "Item added successfully";
@@ -37,12 +37,30 @@ class MenuItemsService {
         return searchResult;
     }
 
-    async UpdateMenuItems(_id, name, description, price) {
-
+    async UpdateMenuItems(_id, userId, name, description, price) {
+        const item = await MenuItem.findById(_id);
+        const userRelation = await RestaurantUsers.findOne({userId, "restaurantId":item.restaurantId});
+        if (!userRelation || (userRelation.position !== "owner" & userRelation.position !== "manager")) {
+            return "User does not have any relation with the given restaurant!";
+        }
+        if (!item) {
+            return "Item not found!"
+        }
+        await MenuItem.updateOne({_id}, {name, description, price});
+        return "Item updated successfully!";
     }
 
-    async DeleteMenuItems(_id) {
-
+    async DeleteMenuItems(_id, userId) {
+        const item = await MenuItem.findById(_id);
+        const userRelation = await RestaurantUsers.findOne({userId, "restaurantId":item.restaurantId});
+        if (!userRelation || (userRelation.position !== "owner" & userRelation.position !== "manager")) {
+            return "User does not have any relation with the given restaurant!";
+        }
+        if (!item) {
+            return "Item not found!"
+        }
+        await MenuItem.findByIdAndDelete(_id);
+        return "Item deleted successfully!";
     }
 
 }

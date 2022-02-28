@@ -15,14 +15,14 @@ class MenuItemsController{
             
             const response = await menuItemsService.AddMenuItem(userId, restaurantId, name, description, price, pictures);
             
-            if (response === "Restaurant does not exist!") {
-                res.status(404).json({response});
-                return;            
-            }
-        
             if (response === "User does not have any relation with the given restaurant!") {
                 res.status(403).json({response});
                 return;
+            }
+
+            if (response === "Restaurant does not exist!") {
+                res.status(404).json({response});
+                return;            
             }
         
             res.status(200).json({response});
@@ -51,7 +51,24 @@ class MenuItemsController{
 
     async UpdateItem(req, res){
         try {
-            const {id} = req.body;
+            const {id} = req.query;
+            const {name, description, price} = req.body;
+            
+            const tokenPayload = jwt.decode(req.headers.authorization.split(' ')[1]);
+            const userId = tokenPayload.sub;
+
+            const response = await menuItemsService.UpdateMenuItems(id, userId, name, description, price);
+
+            if (response === "User does not have any relation with the given restaurant!") {
+                res.status(403).json({response});
+                return;
+            }
+
+            if (response === "Restaurant does not exist!") {
+                res.status(404).json({response});
+                return;            
+            }
+
         } catch (error) {
             error = error.message;
             res.status(500).json({error});
@@ -59,7 +76,29 @@ class MenuItemsController{
     }
 
     async DeleteItem(req, res){
+        try {
+            const {id} = req.query;
 
+            const tokenPayload = jwt.decode(req.headers.authorization.split(' ')[1]);
+            const userId = tokenPayload.sub;
+
+            const response = await menuItemsService.DeleteMenuItems(id, userId);
+
+            if (response === "User does not have any relation with the given restaurant!") {
+                res.status(403).json({response});
+                return;
+            }
+
+            if (response === "Restaurant does not exist!") {
+                res.status(404).json({response});
+                return;            
+            }
+
+            res.status(200).json({response});
+        } catch (error) {
+            error = error.message;
+            res.status(500).json({error});
+        }
     }
 
 }
