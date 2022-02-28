@@ -7,10 +7,12 @@ import KeycloakInit from "./helpers/InitKeycloak.js";
 const router = express.Router();
 
 const restaurantController = new RestaurantController();
+const menuItemsController = new MenuItemsController();
 
 const keycloak = KeycloakInit();
 
 router.get('/find', async (req, res) => restaurantController.FindRestaurant(req, res));
+router.get('/menu/find', async (req, res) => menuItemsController.FindItem(req, res));
 
 router.use(keycloak.middleware());
 
@@ -18,5 +20,6 @@ router.post('/create', keycloak.protect(), async (req, res) => restaurantControl
 router.put('/update', keycloak.protect(), async (req, res) => restaurantController.UpdateRestaurant(req, res));
 router.delete('/delete', keycloak.protect(), async (req, res) => restaurantController.DeleteRestaurant(req, res));
 
+router.post('/menu/add', keycloak.protect(), async (req, res) => menuItemsController.AddItem(req, res));
 
 export default router;

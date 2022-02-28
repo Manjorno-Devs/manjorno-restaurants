@@ -7,11 +7,11 @@ import RestaurantUsers from '../models/RestaurantUsersRelation.js';
 class MenuItemsService {
 
     async AddMenuItem(userId, restaurantId, name, description, price, pictures) {
-        const restaurant = Restaurant.findById(restaurantId);
-        const userRelation = RestaurantUsers.find({userId, "position": {$or: ["owner", "manager"]}});
+        const restaurant = await Restaurant.findById(restaurantId);
         if (!restaurant) {
             return "Restaurant does not exist!";
         }
+        const userRelation = await RestaurantUsers.findOne({userId, restaurantId});
         if (!userRelation || (userRelation.position !== "owner" & userRelation.position !== "manager")) {
             return "User does not have any relation with the given restaurant!";
         }
@@ -19,7 +19,7 @@ class MenuItemsService {
         return "Item added successfully";
     }
 
-    async FindMenuItem(_id, restaurantId, name) {
+    async FindMenuItem(_id, restaurantId, itemName) {
 
     }
 

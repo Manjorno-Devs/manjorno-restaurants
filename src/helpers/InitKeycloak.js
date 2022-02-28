@@ -1,7 +1,7 @@
 import session from "express-session";
 import Keycloak from "keycloak-connect";
 
-let keycloak;
+let keycloak = undefined;
 
 const config = {
     "realm": "Manjorno",
@@ -16,12 +16,9 @@ export default function KeycloakInit() {
     if (keycloak) {
         return keycloak;
     } else {
-        const memoryStore = new session.MemoryStore();
         keycloak = new Keycloak({
-            secret: 'some secret',
-            resave: false,
-            saveUninitialized: true,
-            store: memoryStore
+            store: new session.MemoryStore(),
+            secret: 's3cr3t'
         }, config);
         return keycloak;
     }

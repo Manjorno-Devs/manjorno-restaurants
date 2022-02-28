@@ -54,7 +54,7 @@ class RestaurantsService {
     }
 
     async DeleteRestaurant(_id, userId) {
-        const restaurantUserRelation = RestaurantUsers.findOne({userId, "restaurantId":_id});
+        const restaurantUserRelation = await RestaurantUsers.findOne({userId, "restaurantId":_id});
         if (!restaurantUserRelation || (restaurantUserRelation.position !== 'manager' && restaurantUserRelation.position !== 'owner')) {
             return "You do not possess the rights for this action!";
         }
