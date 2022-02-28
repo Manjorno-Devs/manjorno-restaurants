@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import MenuItem from '../models/MenuItem.js';
 import Restaurant from '../models/Restaurant.js';
 
 import Restaurants from '../models/Restaurant.js';
@@ -36,8 +37,8 @@ class RestaurantsService {
     }
 
     async UpdateRestaurantInfo(_id, userId, name, contacts, locationLink) {
-        const searchRelation = (await RestaurantUsers.findOne({userId}));
-        if (!searchRelation || (searchRelation.position !== 'manager' && searchRelation.position !== 'owner')) {
+        const restaurantUserRelation = await RestaurantUsers.findOne({userId});
+        if (!restaurantUserRelation || (restaurantUserRelation.position !== 'manager' && restaurantUserRelation.position !== 'owner')) {
             return "You do not possess the rights for this action!";
         }
         const restaurant = await Restaurants.findById(_id);
@@ -52,14 +53,18 @@ class RestaurantsService {
         return "Restaurant updated successfully!";
     }
 
-    async DeleteRestaurant(_id) {
-        const searchRestaurant = await Restaurants.findById(_id);
-        if (!searchRestaurant) {
+    async DeleteRestaurant(_id, userId) {
+        const restaurantUserRelation = RestaurantUsers.findOne({userId, "restaurantId":_id});
+        if (!restaurantUserRelation || (restaurantUserRelation.position !== 'manager' && restaurantUserRelation.position !== 'owner')) {
+            return "You do not possess the rights for this action!";
+        }
+        const restaurant = await Restaurants.findById(_id);
+        if (!restaurant) {
             return "The Restaurant does not exist";
         }
+        await MenuItem.deleteMany({"restaurantId":_id});
         await Restaurant.findByIdAndDelete(_id);
-        const restaurantId = 
-        await RestaurantUsers.deleteOne({});
+        await RestaurantUsers.deleteMany({"restaurantId": _id});
         return "Restaurant Deleted successfully";
     }
 }
