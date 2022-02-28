@@ -36,8 +36,13 @@ class MenuItemsController{
         try {
             const {id, restaurantId, itemName} = req.query;
 
+            const response = await menuItemsService.FindMenuItem(id, restaurantId, itemName);
             
-            res.status(200).json({restaurantId});
+            if (response.length === 0 || !response) {
+                res.status(404).json({"error":"Item not found!"});
+            }
+
+            res.status(200).json(response);
         } catch (error) {
             error = error.message;
             res.status(500).json({error});
@@ -45,7 +50,12 @@ class MenuItemsController{
     }
 
     async UpdateItem(req, res){
-
+        try {
+            const {id} = req.body;
+        } catch (error) {
+            error = error.message;
+            res.status(500).json({error});
+        }
     }
 
     async DeleteItem(req, res){

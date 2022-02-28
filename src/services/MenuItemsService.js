@@ -20,10 +20,24 @@ class MenuItemsService {
     }
 
     async FindMenuItem(_id, restaurantId, itemName) {
-
+        if (_id) {
+            const searchResult = await MenuItem.findById(_id);
+            return searchResult;
+        }
+        if (!itemName) {
+            const searchResult = await MenuItem.find({restaurantId});
+            return searchResult;
+        }
+        const searchResult = await MenuItem.find({
+            restaurantId,
+            name: {
+                "$regex": itemName
+            }
+        });
+        return searchResult;
     }
 
-    async UpdateMenuItems(_id, restaurantId, name, description, price) {
+    async UpdateMenuItems(_id, name, description, price) {
 
     }
 

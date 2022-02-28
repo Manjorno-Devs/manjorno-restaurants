@@ -21,5 +21,5 @@ router.put('/update', keycloak.protect(), async (req, res) => restaurantControll
 router.delete('/delete', keycloak.protect(), async (req, res) => restaurantController.DeleteRestaurant(req, res));
 
 router.post('/menu/add', keycloak.protect(), async (req, res) => menuItemsController.AddItem(req, res));
-
+router.put('/menu/update', keycloak.protect(), async (req, res) => menuItemsController.UpdateItem(req, res));
 export default router;
