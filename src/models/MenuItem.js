@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-export default MenuItem = mongoose.Model('MenuItem', new mongoose.Schema({
+const MenuItem = mongoose.model('MenuItem', new mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -15,5 +15,11 @@ export default MenuItem = mongoose.Model('MenuItem', new mongoose.Schema({
     price: {
         type: Object,
         default: new Array()
+    },
+    restaurantId: {
+        type: mongoose.Types.ObjectId,
+        ref: 'Restaurant'
     }
 }));
+
+export default MenuItem;

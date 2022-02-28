@@ -4,7 +4,8 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import amqp from 'amqplib/callback_api.js';
 
-import router from './src/routes.js';
+import restaurantRouter from './src/restaurantRoutes.js';
+import itemsRouter from './src/itemsRouter.js';
 
 const app = express();
 const env = dotenv.config();
@@ -12,7 +13,8 @@ const env = dotenv.config();
 app.use(express.json());
 app.use(cors());
 
-app.use('/api/restaurants', router);
+app.use('/api/restaurants', restaurantRouter);
+app.use('/api/restaurants/menu', itemsRouter);
 
 const port = process.env.PORT || 3200
 

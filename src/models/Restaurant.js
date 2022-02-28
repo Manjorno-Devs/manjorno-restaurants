@@ -16,10 +16,6 @@ const Restaurant = mongoose.model('Restaurants', new mongoose.Schema({
     locationLink:{
         type: String,
         required: true
-    },
-    menuItems: {
-        type: Array,
-        default: new Array()
     }
 }));
 

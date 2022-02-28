@@ -1,27 +1,30 @@
 import mongoose from 'mongoose';
+import Restaurant from '../models/Restaurant.js';
 
 import Restaurants from '../models/Restaurant.js';
+import RestaurantUsers from '../models/RestaurantUsersRelation.js';
 
 class RestaurantsService {
-    async CreateRestaurant(name, contacts, locationLink) {
-        const checkIFExists = await Restaurants.findOne({name});
+    async CreateRestaurant(userId, username, restaurantName, contacts, locationLink) {
+        const checkIFExists = await Restaurants.findOne({"name":restaurantName});
+
         if (checkIFExists) {
             return "Restaurant already exists";
         }
+
         const _id = mongoose.Types.ObjectId();
-        Restaurants.create({_id, name, contacts, locationLink});
-        return _id;
+
+        Restaurants.create({_id, "name":restaurantName, contacts, locationLink});
+
+        const restaurantId = _id;
+        RestaurantUsers.create({userId, username, restaurantId, "position":"owner"});
+
+        return "Restaurant Created successfully";
     }
 
     async FindRestaurant(_id, name) {
         if (_id) {
-            try {
-                _id = mongoose.Types.ObjectId(_id); 
-                const search = await Restaurants.find({_id});
-                return search;
-            } catch (err) {
-                const error = "The given id is not valid!"  
-            }
+            return await Restaurants.findById(_id);
         }
         const query = {
             "name": {
@@ -29,13 +32,16 @@ class RestaurantsService {
                 "$options": "i"
             }
         };
-        const search = await Restaurants.find(query);
-        return search;
+        return await Restaurants.find(query);
     }
 
-    async UpdateRestaurantInfo(_id, name, contacts, locationLink) {
-        const restaurant = await Restaurants.findOne({_id});
-        if (restaurant.length === 0) {
+    async UpdateRestaurantInfo(_id, userId, name, contacts, locationLink) {
+        const searchRelation = (await RestaurantUsers.findOne({userId}));
+        if (!searchRelation || (searchRelation.position !== 'manager' && searchRelation.position !== 'owner')) {
+            return "You do not possess the rights for this action!";
+        }
+        const restaurant = await Restaurants.findById(_id);
+        if (!restaurant) {
             return "Restaurant does not exist!";
         }
         let toBeUpdated = {name, locationLink};
@@ -51,7 +57,9 @@ class RestaurantsService {
         if (!searchRestaurant) {
             return "The Restaurant does not exist";
         }
-        await Restaurants.deleteOne({_id});
+        await Restaurant.findByIdAndDelete(_id);
+        const restaurantId = 
+        await RestaurantUsers.deleteOne({});
         return "Restaurant Deleted successfully";
     }
 }

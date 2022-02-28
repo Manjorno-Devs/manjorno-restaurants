@@ -7,7 +7,9 @@ class UserRestaurantService{
     }
 
     async SearchRelations({_id, userId, restaurantId, username, position}){
-        const searchResult = await RestaurantUsersRelation.find({$or: [{_id}, {userId, restaurantId}, {username}, {position}]});
+        console.log(userId);
+        console.log(restaurantId);
+        const searchResult = await RestaurantUsersRelation.find({_id, userId, restaurantId, username, position});
         return searchResult;
     }
 

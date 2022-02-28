@@ -1,6 +1,7 @@
 import express from "express";
 
 import RestaurantController from "./controllers/RestaurantsController.js";
+import MenuItemsController from "./controllers/MenuItemsController.js";
 import KeycloakInit from "./helpers/InitKeycloak.js";
 
 const router = express.Router();
@@ -16,5 +17,6 @@ router.use(keycloak.middleware());
 router.post('/create', keycloak.protect(), async (req, res) => restaurantController.CreateRestaurant(req, res));
 router.put('/update', keycloak.protect(), async (req, res) => restaurantController.UpdateRestaurant(req, res));
 router.delete('/delete', keycloak.protect(), async (req, res) => restaurantController.DeleteRestaurant(req, res));
+
 
 export default router;
