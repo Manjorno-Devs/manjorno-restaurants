@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import MenuItem from '../models/MenuItem.js';
 
 import Restaurants from '../models/Restaurant.js';
-import RestaurantUsers from '../models/Employees.js';
+import Employees from '../models/Employees.js';
 
 class RestaurantsService {
     async CreateRestaurant(userId, username, restaurantName, contacts, locationLink) {
@@ -17,7 +17,7 @@ class RestaurantsService {
         Restaurants.create({_id, "name":restaurantName, contacts, locationLink});
 
         const restaurantId = _id;
-        RestaurantUsers.create({userId, username, restaurantId, "position":"owner"});
+        Employees.create({userId, username, restaurantId, "position":"owner"});
 
         return "Restaurant Created successfully";
     }
@@ -36,7 +36,7 @@ class RestaurantsService {
     }
 
     async UpdateRestaurantInfo(_id, userId, name, contacts, locationLink) {
-        const restaurantUserRelation = await RestaurantUsers.findOne({userId});
+        const restaurantUserRelation = await Employees.findOne({userId});
         if (!restaurantUserRelation || (restaurantUserRelation.position !== 'manager' && restaurantUserRelation.position !== 'owner')) {
             return "You do not possess the rights for this action!";
         }
@@ -53,7 +53,7 @@ class RestaurantsService {
     }
 
     async DeleteRestaurant(_id, userId) {
-        const restaurantUserRelation = await RestaurantUsers.findOne({userId, "restaurantId":_id});
+        const restaurantUserRelation = await Employees.findOne({userId, "restaurantId":_id});
         if (!restaurantUserRelation || (restaurantUserRelation.position !== 'manager' && restaurantUserRelation.position !== 'owner')) {
             return "You do not possess the rights for this action!";
         }
@@ -62,8 +62,8 @@ class RestaurantsService {
             return "The Restaurant does not exist";
         }
         await MenuItem.deleteMany({"restaurantId":_id});
-        await Restaurant.findByIdAndDelete(_id);
-        await RestaurantUsers.deleteMany({"restaurantId": _id});
+        await Restaurants.findByIdAndDelete(_id);
+        await Employees.deleteMany({"restaurantId": _id});
         return "Restaurant Deleted successfully";
     }
 }
