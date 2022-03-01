@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import MenuItem from '../models/MenuItem.js';
-import Restaurant from '../models/Restaurant.js';
 
 import Restaurants from '../models/Restaurant.js';
 import RestaurantUsers from '../models/Employees.js';
