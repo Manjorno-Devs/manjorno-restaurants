@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 import RestaurantsService from '../services/RestaurantsService.js';
-import UserRestaurantService from '../services/UserRestaurantsService.js';
+import UserRestaurantService from '../services/EmployeesService.js';
 
 const restaurant = new RestaurantsService();
 const userRestaurant = new UserRestaurantService();

@@ -1,4 +1,4 @@
-import RestaurantUsersRelation from "../models/RestaurantUsersRelation.js";
+import RestaurantUsersRelation from "../models/Employees.js";
 
 class UserRestaurantService{
 
@@ -7,8 +7,6 @@ class UserRestaurantService{
     }
 
     async SearchRelations({_id, userId, restaurantId, username, position}){
-        console.log(userId);
-        console.log(restaurantId);
         const searchResult = await RestaurantUsersRelation.find({_id, userId, restaurantId, username, position});
         return searchResult;
     }

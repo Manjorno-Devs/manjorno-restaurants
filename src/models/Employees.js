@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const RestaurantUsers = mongoose.model('RestaurantUserRelation', new mongoose.Schema({
+const Employees = mongoose.model('Employees', new mongoose.Schema({
     userId: {
         type: String,
         required: true
@@ -15,7 +15,7 @@ const RestaurantUsers = mongoose.model('RestaurantUserRelation', new mongoose.Sc
     },
     position: {
         type: String,
-        enum: ['employee', 'manager', 'owner'],
+        enum: ['deliverer', 'worker', 'manager', 'owner'],
         required: true,
     },
     dateTimeAdded: {
@@ -28,4 +28,4 @@ const RestaurantUsers = mongoose.model('RestaurantUserRelation', new mongoose.Sc
     }
 }));
 
-export default RestaurantUsers;
+export default Employees;
