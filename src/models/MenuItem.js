@@ -21,7 +21,7 @@ const MenuItem = mongoose.model('MenuItem', new mongoose.Schema({
         ref: 'Restaurant'
     },
     AddedBy: {
-        type: mongoose.Types.ObjectId;
+        type: mongoose.Types.ObjectId,
         ref: 'Employees'
     }
 }));

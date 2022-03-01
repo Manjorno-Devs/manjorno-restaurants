@@ -2,20 +2,20 @@ import mongoose from 'mongoose';
 
 import MenuItem from '../models/MenuItem.js';
 import Restaurant from '../models/Restaurant.js';
-import RestaurantUsers from '../models/Employees.js';
+import Employees from '../models/Employees.js';
 
 class MenuItemsService {
 
     async AddMenuItem(userId, restaurantId, name, description, price, pictures) {
-        const userRelation = await RestaurantUsers.findOne({userId, restaurantId});
-        if (!userRelation || (userRelation.position !== "owner" & userRelation.position !== "manager")) {
-            return "User does not have any relation with the given restaurant!";
-        }
         const restaurant = await Restaurant.findById(restaurantId);
         if (!restaurant) {
             return "Restaurant does not exist!";
         }
-        MenuItem.create({restaurantId, name, description, price, pictures});
+        const userRelation = await Employees.findOne({userId, restaurantId});
+        if (!userRelation || (userRelation.position !== "owner" & userRelation.position !== "manager")) {
+            return "User does not have any relation with the given restaurant!";
+        }
+        MenuItem.create({restaurantId, name, description, price, pictures, "AddedBy":userRelation._id});
         return "Item added successfully";
     }
 
@@ -39,7 +39,7 @@ class MenuItemsService {
 
     async UpdateMenuItems(_id, userId, name, description, price) {
         const item = await MenuItem.findById(_id);
-        const userRelation = await RestaurantUsers.findOne({userId, "restaurantId":item.restaurantId});
+        const userRelation = await Employees.findOne({userId, "restaurantId":item.restaurantId});
         if (!userRelation || (userRelation.position !== "owner" & userRelation.position !== "manager")) {
             return "User does not have any relation with the given restaurant!";
         }
@@ -52,7 +52,7 @@ class MenuItemsService {
 
     async DeleteMenuItems(_id, userId) {
         const item = await MenuItem.findById(_id);
-        const userRelation = await RestaurantUsers.findOne({userId, "restaurantId":item.restaurantId});
+        const userRelation = await Employees.findOne({userId, "restaurantId":item.restaurantId});
         if (!userRelation || (userRelation.position !== "owner" & userRelation.position !== "manager")) {
             return "User does not have any relation with the given restaurant!";
         }
