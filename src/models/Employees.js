@@ -6,7 +6,7 @@ const Employees = mongoose.model('Employees', new mongoose.Schema({
         required: true
     },
     restaurantId: {
-        type: mongoose.ObjectId,
+        type: mongoose.Types.ObjectId,
         ref: 'Restaurants'
     },
     username: {
@@ -21,6 +21,10 @@ const Employees = mongoose.model('Employees', new mongoose.Schema({
     dateTimeAdded: {
         type: Date,
         default: new Date()
+    },
+    HiredBy:{
+        type: mongoose.Types.ObjectId,
+        ref: 'Employees'
     },
     workingHere: {
         type: Boolean,
