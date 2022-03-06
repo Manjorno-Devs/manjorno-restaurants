@@ -8,12 +8,12 @@ class MenuItemsController{
     async AddItem(req, res){
         try {
             const {restaurantId} = req.query;
-            const {name, description, price, pictures} = req.body;
+            const {name, description, price} = req.body;
 
             const tokenPayload = jwt.decode(req.headers.authorization.split(' ')[1]);
             const userId = tokenPayload.sub;
             
-            const response = await menuItemsService.AddMenuItem(userId, restaurantId, name, description, price, pictures);
+            const response = await menuItemsService.AddMenuItem(userId, restaurantId, name, description, price);
             
             if (response === "User does not have any relation with the given restaurant!") {
                 res.status(403).json({response});

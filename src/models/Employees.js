@@ -9,10 +9,6 @@ const Employees = mongoose.model('Employees', new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'Restaurants'
     },
-    username: {
-        type: String,
-        required: true
-    },
     position: {
         type: String,
         enum: ['deliverer', 'worker', 'manager', 'owner'],

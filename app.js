@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import amqp from 'amqplib/callback_api.js';
 
 import restaurantRouter from './src/restaurantRoutes.js';
+import RabbitMQConsumer from './src/rabbitmq-consumer.js';
 
 const app = express();
 const env = dotenv.config();
@@ -28,11 +29,16 @@ amqp.connect(process.env.AMQP_CONNECTION_URL , (connectionError, connection) => 
 
         console.log("RabbitMQ connected");
 
-        const queues = ['create_restaurant', 'update_restaurant', 'delete_restaurant', 'create_order', 'update_order'];
+        const queues = ['add-user', 'update-user', 'delete-user'];
 
         queues.forEach(queueName => {
             channel.assertQueue(queueName, { durable: false });
         });
+
+        const rabbitmMQConsumer = new RabbitMQConsumer(channel, queues);
+        rabbitmMQConsumer.AddUser();
+        rabbitmMQConsumer.UpdateUser();
+        rabbitmMQConsumer.DeleteUser();
 
         mongoose.connect(process.env.MONGODB_CONNECTION_URL, () => {
             console.log("Connected to DB");
