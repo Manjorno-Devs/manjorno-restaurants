@@ -3,6 +3,7 @@ import MenuItem from '../models/MenuItem.js';
 
 import Restaurants from '../models/Restaurant.js';
 import Employees from '../models/Employees.js';
+import Users from '../models/Users.js';
 
 class RestaurantsService {
     async CreateRestaurant(userId, username, restaurantName, contacts, locationLink) {
@@ -16,7 +17,8 @@ class RestaurantsService {
 
         Restaurants.create({_id, "name":restaurantName, contacts, locationLink});
 
-        const restaurantId = _id;
+        const user = Users.findOne();
+
         Employees.create({userId, username, restaurantId, "position":"owner"});
 
         return "Restaurant Created successfully";

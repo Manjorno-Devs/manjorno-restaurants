@@ -35,6 +35,11 @@ amqp.connect(process.env.AMQP_CONNECTION_URL , (connectionError, connection) => 
             channel.assertQueue(queueName, { durable: false });
         });
 
+        channel.bindQueue('add-user', process.env.AMQP_EXCHANGE, 'KK.EVENT.ADMIN.Manjorno.SUCCESS.USER.CREATE');
+        channel.bindQueue('add-user', process.env.AMQP_EXCHANGE, 'KK.EVENT.CLIENT.Manjorno.SUCCESS.account-console.REGISTER');
+        channel.bindQueue('update-user', process.env.AMQP_EXCHANGE, 'KK.EVENT.ADMIN.Manjorno.SUCCESS.USER.UPDATE');
+        channel.bindQueue('delete-user', process.env.AMQP_EXCHANGE, 'KK.EVENT.ADMIN.Manjorno.SUCCESS.USER.DELETE');
+
         const rabbitmMQConsumer = new RabbitMQConsumer(channel, queues);
         rabbitmMQConsumer.AddUser();
         rabbitmMQConsumer.UpdateUser();

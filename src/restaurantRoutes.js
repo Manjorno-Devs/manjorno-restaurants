@@ -4,12 +4,14 @@ import RestaurantController from "./controllers/RestaurantsController.js";
 import MenuItemsController from "./controllers/MenuItemsController.js";
 import EmployeesController from "./controllers/EmployeesController.js";
 import KeycloakInit from "./helpers/InitKeycloak.js";
+import UserController from "./controllers/UsersController.js";
 
 const router = express.Router();
 
 const restaurantController = new RestaurantController();
 const menuItemsController = new MenuItemsController();
 const employeesController = new EmployeesController();
+const userController = new UserController();
 
 const keycloak = KeycloakInit();
 
@@ -26,6 +28,10 @@ router.post('/menu/add', keycloak.protect(), async (req, res) => menuItemsContro
 router.put('/menu/update', keycloak.protect(), async (req, res) => menuItemsController.UpdateItem(req, res));
 router.delete('/menu/delete', keycloak.protect(), async(req, res) => menuItemsController.DeleteItem(req, res));
 
-router.get('/employees/find', keycloak.protect(), async(req, res) => employeesController.Find(req, res))
+router.post('/employees/hire', keycloak.protect(), async (req, res) => employeesController.HireEmployee(req, res));
+router.get('/employees/find', keycloak.protect(), async(req, res) => employeesController.FindEmployee(req, res));
+router.put('/employees/update', keycloak.protect(), async (req, res) => employeesController.UpdateEmployee(req, res));
+router.delete('/employees/delete', keycloak.protect(), async (req, res) => employeesController.DeleteEmployee(req, res));
 
+router.get('/users/find', keycloak.protect(), async (req, res) => userController.FindUser(req, res));
 export default router;
