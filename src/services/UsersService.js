@@ -9,8 +9,13 @@ class UserService {
     }
 
     async FindUser(userId) {
-        const search = await Users.findOne({userId});
-        return search;
+        if (userId) {
+            const search = await Users.find({userId});
+            return search;
+        } else {
+            const search = await Users.find();
+            return search;
+        }
     }
 
     async UpdateUser(userId, username, email, firstName, lastName){

@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 import amqp from 'amqplib/callback_api.js';
 
 import restaurantRouter from './src/restaurantRoutes.js';
-import RabbitMQConsumer from './src/rabbitmq-consumer.js';
+import UserConsumer from './src/rabbitmq/consumer-user.js';
 
 const app = express();
 const env = dotenv.config();
@@ -29,21 +29,28 @@ amqp.connect(process.env.AMQP_CONNECTION_URL , (connectionError, connection) => 
 
         console.log("RabbitMQ connected");
 
-        const queues = ['add-user', 'update-user', 'delete-user'];
+        channel.assertExchange(process.env.AMQP_EXCHANGE_USERS, 'topic', {durable: false});
+        channel.assertExchange(process.env.AMQP_EXCHANGE_RESTAURANTS, 'topic', {durable: false});
+        channel.assertExchange(process.env.AMQP_EXCHANGE_EMPLOYEES, 'topic', {durable: false});
+        channel.assertExchange(process.env.AMQP_EXCHANGE_MENUITEM, 'topic', {durable: false});
+
+        const queues = ['add-user-restaurant', 'update-user-restaurant', 'delete-user-restaurant'];
 
         queues.forEach(queueName => {
             channel.assertQueue(queueName, { durable: false });
         });
 
-        channel.bindQueue('add-user', process.env.AMQP_EXCHANGE, 'KK.EVENT.ADMIN.Manjorno.SUCCESS.USER.CREATE');
-        channel.bindQueue('add-user', process.env.AMQP_EXCHANGE, 'KK.EVENT.CLIENT.Manjorno.SUCCESS.account-console.REGISTER');
-        channel.bindQueue('update-user', process.env.AMQP_EXCHANGE, 'KK.EVENT.ADMIN.Manjorno.SUCCESS.USER.UPDATE');
-        channel.bindQueue('delete-user', process.env.AMQP_EXCHANGE, 'KK.EVENT.ADMIN.Manjorno.SUCCESS.USER.DELETE');
 
-        const rabbitmMQConsumer = new RabbitMQConsumer(channel, queues);
-        rabbitmMQConsumer.AddUser();
-        rabbitmMQConsumer.UpdateUser();
-        rabbitmMQConsumer.DeleteUser();
+        channel.bindQueue('add-user-restaurant', process.env.AMQP_EXCHANGE_USERS, 'KK.EVENT.ADMIN.Manjorno.SUCCESS.USER.CREATE');
+        channel.bindQueue('add-user-restaurant', process.env.AMQP_EXCHANGE_USERS, 'KK.EVENT.CLIENT.Manjorno.SUCCESS.account-console.REGISTER');
+        channel.bindQueue('update-user-restaurant', process.env.AMQP_EXCHANGE_USERS, 'KK.EVENT.ADMIN.Manjorno.SUCCESS.USER.UPDATE');
+        channel.bindQueue('delete-user-restaurant', process.env.AMQP_EXCHANGE_USERS, 'KK.EVENT.ADMIN.Manjorno.SUCCESS.USER.DELETE');
+
+
+        const userConsumer = new UserConsumer(channel, queues);
+        userConsumer.AddUser();
+        userConsumer.UpdateUser();
+        userConsumer.DeleteUser();
 
         mongoose.connect(process.env.MONGODB_CONNECTION_URL, () => {
             console.log("Connected to DB");

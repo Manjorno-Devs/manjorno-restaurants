@@ -11,7 +11,7 @@ const Employees = mongoose.model('Employees', new mongoose.Schema({
     },
     position: {
         type: String,
-        enum: ['deliverer', 'worker', 'manager', 'owner'],
+        enum: ['worker', 'manager', 'owner'],
         required: true,
     },
     dateTimeAdded: {

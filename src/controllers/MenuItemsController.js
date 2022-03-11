@@ -40,6 +40,7 @@ class MenuItemsController{
             
             if (response.length === 0 || !response) {
                 res.status(404).json({"error":"Item not found!"});
+                return;
             }
 
             res.status(200).json(response);
@@ -69,6 +70,7 @@ class MenuItemsController{
                 return;            
             }
 
+            res.status(200).json({response});
         } catch (error) {
             error = error.message;
             res.status(500).json({error});

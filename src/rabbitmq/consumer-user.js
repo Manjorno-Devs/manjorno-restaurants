@@ -1,8 +1,8 @@
-import UserService from './services/UsersService.js';
+import UserService from '../services/UsersService.js';
 
 const userService = new UserService();
 
-class RabbitMQConsumer {
+class UserConsumer {
 
     constructor(channel, queues) {
         this.channel = channel;
@@ -10,7 +10,7 @@ class RabbitMQConsumer {
     }
     
     async AddUser() {
-        this.channel.consume(this.queues[0], async (msg) => {
+        this.channel.consume('add-user-restaurant', async msg => {
             const {userId, details, representation, resourcePath} = JSON.parse(msg.content.toString());
             if (!details) {
                 const userId = resourcePath.split('/')[1];
@@ -24,22 +24,24 @@ class RabbitMQConsumer {
     }
 
     async UpdateUser() {
-        this.channel.consume('update-user', msg => {
+        this.channel.consume('update-user-restaurant', async msg => {
             const {resourcePath, representation} = JSON.parse(msg.content.toString());
+            console.log(msg.content.toString());
             const userId = resourcePath.split('/')[1];
             const {username, email, firstName, lastName} = JSON.parse(representation);
-            userService.UpdateUser(userId, username, email, firstName, lastName);
+            console.log(email);
+            await userService.UpdateUser(userId, username, email, firstName, lastName);
         }, {noAck: true});
     }
 
     async DeleteUser() {
-        this.channel.consume('delete-user', msg => {
+        this.channel.consume('delete-user-restaurant', async msg => {
             const {resourcePath} = JSON.parse(msg.content.toString());
             const userId = resourcePath.split('/')[1];
-            userService.DeleteUser(userId);
+            await userService.DeleteUser(userId);
         }, {noAck: true});
     }
 
 }
 
-export default RabbitMQConsumer;
+export default UserConsumer;

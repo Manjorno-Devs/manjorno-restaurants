@@ -1,8 +1,16 @@
+import mongoose from 'mongoose';
+
 import Employees from "../models/Employees.js";
 import Restaurants from "../models/Restaurant.js";
 import Users from "../models/Users.js";
 
+import EmployeePublisher from "../rabbitmq/publisher-employees.js"; 
+
 class EmployeesService{
+
+    constructor() {
+        this.employeePublisher = new EmployeePublisher();
+    }
 
     async HireEmployee(employeeHiringId, userId, restaurantId, position){
         const restaurant = await Restaurants.findById(restaurantId);
@@ -13,25 +21,31 @@ class EmployeesService{
             "userId":employeeHiringId, 
             restaurantId
         });
-        if (!EmployeeHiring || (EmployeeHiring.position !== "owner" & EmployeeHiring.position !== "manager")) {
+        if (!EmployeeHiring || EmployeeHiring.position === 'worker') {
             return "User does not have any relation with the given restaurant or does not have permitions!";
         }
         const checkIFEmployeeExists = await Employees.findOne({userId, restaurantId});
         if (checkIFEmployeeExists) {
             return "Employee already hired!";
         }
-        const user = await Users.findOne({userId});
+
+        const _id = mongoose.Types.ObjectId();
+
         await Employees.create({
-            "userId": user.userId, 
+            _id,
+            userId, 
             restaurantId, 
             position, 
             "HiredBy":EmployeeHiring._id
         });
+
+        await this.employeePublisher.AddEmployee({_id, userId, restaurantId, position});
+
         return "Employee hired successfully!";
     }
 
-    async SearchEmployee(employeeChecking, {id, userId, restaurantId, username, firstName, lastName, position}){
-        const checkIFEmployeeSearchingExists = await Employees.findOne({"userId":employeeChecking, restaurantId});
+    async SearchEmployee(employeeCheckingId, restaurantId, {id, userId, username, firstName, lastName, position}){
+        const checkIFEmployeeSearchingExists = await Employees.findOne({"userId":employeeCheckingId, restaurantId});
         if (!checkIFEmployeeSearchingExists) {
             return "User does not have any relation with the given restaurant!";
         }
@@ -42,11 +56,8 @@ class EmployeesService{
         const searchResult = await Employees.find({
             $or: [
                 {userId}, 
-                {restaurantId, position}, 
-                {restaurantId, username}, 
-                {restaurantId, firstName}, 
-                {restaurantId, lastName}, 
-                {restaurantId, firstName, lastName}
+                {restaurantId},
+                {restaurantId, position}
             ]
         });
         return searchResult;
@@ -61,7 +72,7 @@ class EmployeesService{
             "userId":EmployeeUpdatingId, 
             restaurantId
         });
-        if (!EmployeeUpdating || (EmployeeUpdating.position !== "owner" & EmployeeUpdating.position !== "manager")) {
+        if (!EmployeeUpdating || EmployeeHiring.position === 'worker') {
             return "User does not have any relation with the given restaurant or does not have permitions!";
         }
         const employee = await Employees.findOne({
@@ -71,14 +82,17 @@ class EmployeesService{
         if (!employee || !employee.workingHere) {
             return "The employee is not working here!";
         }
-        if (employee.position === 'owner' && EmployeeUpdating.position === 'manager') {
-            return "Managers can't update owners!";
+        if (employee.position !== 'owner') {
+            return "Can't update owners!";
         }
         await Employees.updateOne(
-            {"userId": employeeId} ,{
+            {"userId": employeeId, restaurantId} ,{
                 position,
                 workingHere
         });
+
+        await this.employeePublisher.UpdateEmployee({"userId": employeeId, restaurantId, position});
+
         return "Employee updated successfully!"
     }
 
@@ -91,7 +105,7 @@ class EmployeesService{
             "userId":EmployeeDeletingId, 
             restaurantId
         });
-        if (!EmployeeDeleting || (EmployeeDeleting.position !== "owner" & EmployeeDeleting.position !== "manager")) {
+        if (!EmployeeDeleting || EmployeeDeleting.position === 'worker') {
             return "User does not have any relation with the given restaurant or does not have permitions!";
         }
         const employee = await Employees.findOne({
@@ -101,10 +115,12 @@ class EmployeesService{
         if (employee.workingHere) {
             return "Can't delete employee that's currently working!";
         }
-        if (employee.position === 'owner' && EmployeeDeleting.position === 'manager') {
+        if (employee.position !== 'worker') {
             return "Managers can't delete owners!";
         }
         await Employees.deleteOne(employee);
+
+        await this.employeePublisher.DeleteEmployee({"userId":employeeId, restaurantId});
         return "Employee deleted successfully!";
     }
 }

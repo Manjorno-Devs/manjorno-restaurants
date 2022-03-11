@@ -44,7 +44,7 @@ class MenuItemsController{
             const tokenPayload = await jwt.decode(req.headers.authorization.split(' ')[1]);
             const employeeCheckingId = tokenPayload.sub;
 
-            const response = await employees.SearchEmployee(employeeCheckingId, {id, userId, restaurantId, username, firstName, lastName, position}); 
+            const response = await employees.SearchEmployee(employeeCheckingId, restaurantId, {id, userId, username, firstName, lastName, position}); 
 
             if (response === "User does not have any relation with the given restaurant!") {
                 res.status(403).json({response});
@@ -91,7 +91,7 @@ class MenuItemsController{
                 return;
             }
 
-            if (response === "Managers can't update owners!") {
+            if (response === "Can't update owners!") {
                 res.status(403).json({response});
                 return;
             }
