@@ -32,7 +32,7 @@ spec:
         - name: AMQP_EXCHANGE_USERS
           value: user
         - name: AMQP_EXCHANGE_RESTAURANTS
-          value: restaurants
+          value: restaurant
         - name: AMQP_EXCHANGE_EMPLOYEES
           value: employee
         - name: AMQP_EXCHANGE_MENUITEM
