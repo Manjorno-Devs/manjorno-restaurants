@@ -42,7 +42,7 @@ amqp.connect(process.env.AMQP_CONNECTION_URL , (connectionError, connection) => 
 
 
         channel.bindQueue('add-user-restaurant', process.env.AMQP_EXCHANGE_USERS, 'KK.EVENT.ADMIN.Manjorno.SUCCESS.USER.CREATE');
-        channel.bindQueue('add-user-restaurant', process.env.AMQP_EXCHANGE_USERS, 'KK.EVENT.CLIENT.Manjorno.SUCCESS.account-console.REGISTER');
+        channel.bindQueue('add-user-restaurant', process.env.AMQP_EXCHANGE_USERS, 'KK.EVENT.CLIENT.Manjorno.SUCCESS.client-app.REGISTER');
         channel.bindQueue('update-user-restaurant', process.env.AMQP_EXCHANGE_USERS, 'KK.EVENT.ADMIN.Manjorno.SUCCESS.USER.UPDATE');
         channel.bindQueue('delete-user-restaurant', process.env.AMQP_EXCHANGE_USERS, 'KK.EVENT.ADMIN.Manjorno.SUCCESS.USER.DELETE');
 
