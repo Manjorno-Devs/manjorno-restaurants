@@ -26,7 +26,7 @@ spec:
         - name : KEYCLOAK_CLIENTCLI_SECRET
           value: wINGuKIh73lKM8akMkKrT6n7D65fVm0I
         - name: MONGODB_CONNECTION_URL
-          value: mongodb+srv://manjorno-rest:aRW2co3JhKYLCW3S@cluster0.s7ds3.mongodb.net/test?authSource=admin&replicaSet=atlas-egwy6w-shard-0&readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=true
+          value: mongodb+srv://manjorno-rest:aRW2co3JhKYLCW3S@cluster0.s7ds3.mongodb.net/Restaurant
         - name: AMQP_CONNECTION_URL
           value: amqp://restaurant-microservice:restaurant123@10.244.0.12:5672
         - name: AMQP_EXCHANGE_USERS
