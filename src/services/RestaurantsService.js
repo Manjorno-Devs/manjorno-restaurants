@@ -39,11 +39,23 @@ class RestaurantsService {
         return "Restaurant Created successfully";
     }
 
-    async FindRestaurant(_id, name) {
+    async FindRestaurant(_id, name, employeeId) {
+        if (employeeId && _id) {
+            const employees = await Employees.find({"userId":employeeId, "restaurantId":_id, "position": {$in: ['owner', 'manager']}});
+            if (!employees) {
+                return "Can't find by the given parameteres!";
+            }
+            const restaurants = new Array();
+            for (let index = 0; index < employees.length; index++) {
+                const restaurant = await Restaurants.findById(employees[index].restaurantId);
+                await restaurants.push(restaurant);
+            }
+            return restaurants;
+        }
         if (_id) {
             return await Restaurants.findById(_id);
         }
-        if (!_id && !name) {
+        if (!_id && !name && !employeeId) {
             return await Restaurants.find();
         }
         const query = {

@@ -37,9 +37,9 @@ class RestaurantController{
 
     async FindRestaurant(req, res) {
         try {
-            const {id, name} = req.query;
+            const {id, name, employeeId} = req.query;
 
-            const response = await restaurant.FindRestaurant(id, name);
+            const response = await restaurant.FindRestaurant(id, name, employeeId);
             if (response.length === 0) {
                 const error = "Restaurant Not Found"
                 res.status(404).json({error});
