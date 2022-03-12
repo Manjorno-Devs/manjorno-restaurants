@@ -20,6 +20,7 @@ class RestaurantController{
 
             if (!name || !locationLink) {
                 res.status(400).json({"response":"Insufficient data provided!"});
+                return;
             }
 
             if (response === "Restaurant already exists") {
