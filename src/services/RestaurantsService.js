@@ -43,6 +43,9 @@ class RestaurantsService {
         if (_id) {
             return await Restaurants.findById(_id);
         }
+        if (!_id && !name) {
+            return await Restaurants.find();
+        }
         const query = {
             "name": {
                 "$regex": name, 
