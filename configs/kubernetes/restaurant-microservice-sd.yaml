@@ -28,7 +28,7 @@ spec:
         - name: MONGODB_CONNECTION_URL
           value: mongodb+srv://manjorno-rest:aRW2co3JhKYLCW3S@cluster0.s7ds3.mongodb.net/Restaurant
         - name: AMQP_CONNECTION_URL
-          value: amqp://restaurant-microservice:restaurant123@10.244.0.12:5672
+          value: amqp://restaurant-microservice:restaurant123@20.85.131.252:5672
         - name: AMQP_EXCHANGE_USERS
           value: user
         - name: AMQP_EXCHANGE_RESTAURANTS
