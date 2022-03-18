@@ -45,6 +45,10 @@ class EmployeesService{
     }
 
     async SearchEmployee(employeeCheckingId, restaurantId, {id, userId, username, firstName, lastName, position}){
+        if (!restaurantId) {
+            const searchResult = Employees.find({"userId":employeeCheckingId});
+            return searchResult;
+        }
         const checkIFEmployeeSearchingExists = await Employees.findOne({"userId":employeeCheckingId, restaurantId});
         if (!checkIFEmployeeSearchingExists) {
             return "User does not have any relation with the given restaurant!";
