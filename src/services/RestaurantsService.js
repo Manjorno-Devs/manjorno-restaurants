@@ -41,7 +41,7 @@ class RestaurantsService {
 
     async FindRestaurant(_id, name, employeeId) {
         if (employeeId && _id) {
-            const employees = await Employees.find({"userId":employeeId, "restaurantId":_id, "position": {$in: ['owner', 'manager']}});
+            const employees = await Employees.find({"userId":employeeId, "restaurantId":_id});
             if (!employees) {
                 return "Can't find by the given parameteres!";
             }
@@ -69,7 +69,7 @@ class RestaurantsService {
 
     async UpdateRestaurantInfo(_id, userId, name, contacts, locationLink) {
         const restaurantUserRelation = await Employees.findOne({userId});
-        if (!restaurantUserRelation || restaurantUserRelation === 'worker') {
+        if (!restaurantUserRelation || restaurantUserRelation.position === 'worker') {
             return "You do not possess the rights for this action!";
         }
         const restaurant = await Restaurants.findById(_id);
@@ -89,7 +89,8 @@ class RestaurantsService {
 
     async DeleteRestaurant(_id, userId) {
         const restaurantUserRelation = await Employees.findOne({userId, "restaurantId":_id});
-        if (!restaurantUserRelation || restaurantUserRelation !== 'owner') {
+        console.log(restaurantUserRelation);
+        if (!restaurantUserRelation || restaurantUserRelation.position !== 'owner') {
             return "You do not possess the rights for this action!";
         }
         const restaurant = await Restaurants.findById(_id);
