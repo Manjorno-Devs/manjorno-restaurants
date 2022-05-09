@@ -12,6 +12,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: restaurant-microservice
+            name: manjorno-restaurants
             port:
               number: 3200
