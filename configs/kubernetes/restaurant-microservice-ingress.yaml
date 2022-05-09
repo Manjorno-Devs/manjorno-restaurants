@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: restaurant-microservice-ingress
-  namespace: restaurant-microservice
+  namespace: restaurants-microservice
 spec:
   ingressClassName: kong
   rules:
