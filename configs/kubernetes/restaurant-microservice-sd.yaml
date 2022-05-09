@@ -1,34 +1,54 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: restaurant-microservice
+  name: manjorno-restaurants
 spec:
   selector:
     matchLabels:
-      app: restaurant-microservice
+      app: manjorno-restaurants
   replicas: 1
   template:
     metadata:
       labels:
-        app: restaurant-microservice
+        app: manjorno-restaurants
     spec:
       containers:
-      - name: restaurant-microservice
-        image: manjorno.azurecr.io/restaurant-microservice
+      - name: manjorno-restaurants
+        image: manjorno1.azurecr.io/manjorno-restaurants
         imagePullPolicy: Always
         env:
         - name: KEYCLOAK_URL
-          value: "http://52.142.38.205/auth"
+          value: http://keycloak.keycloak.svc.cluster.local:8080/auth
         - name: KEYCLOAK_USERNAME
-          value: backendapp
+          valueFrom:
+            secretKeyRef:
+              name: manjorno-restaurant-secret
+              key: keycloak_username
+              optional: false
         - name: KEYCLOAK_PASSWORD
-          value: i5JtyQIWfldiwZFuK64w5emej5zGjpde
+          valueFrom:
+            secretKeyRef:
+              name: manjorno-restaurant-secret
+              key: keycloak_password
+              optional: false
         - name : KEYCLOAK_CLIENTCLI_SECRET
-          value: wINGuKIh73lKM8akMkKrT6n7D65fVm0I
+          valueFrom:
+            secretKeyRef:
+              name: manjorno-restaurant-secret
+              key: keycloak_client_cli_secret
+              optional: false
         - name: MONGODB_CONNECTION_URL
-          value: mongodb+srv://manjorno-rest:aRW2co3JhKYLCW3S@cluster0.s7ds3.mongodb.net/Restaurant
+          valueFrom:
+            secretKeyRef:
+              name: manjorno-restaurant-secret
+              key: mongodb_connection_url
+              optional: false
         - name: AMQP_CONNECTION_URL
-          value: amqp://restaurant-microservice:restaurant123@20.85.131.252:5672
+          valueFrom:
+            secretKeyRef:
+              name: manjorno-restaurant-secret
+              key: amqp_connection_url
+              optional: false
         - name: AMQP_EXCHANGE_USERS
           value: user
         - name: AMQP_EXCHANGE_RESTAURANTS
@@ -45,10 +65,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: restaurant-microservice
+  name: manjorno-restaurants
 spec:
   selector:
-    app: restaurant-microservice
+    app: manjorno-restaurants
   ports:
   - port: 3200
     targetPort: 3200
