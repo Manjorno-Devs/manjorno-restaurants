@@ -11,9 +11,16 @@ class UserConsumer {
     
     async AddUser() {
         this.channel.consume('add-user-restaurant', async msg => {
-            const {representation} = JSON.parse(msg.content.toString());
-            const {id, username, first_name, last_name, email} = representation;
-            await userService.AddUser(id, username, email, first_name, last_name);
+            console.log(msg.content.toString());
+            const {userId, details, representation, resourcePath} = JSON.parse(msg.content.toString());
+            if (!details) {
+                const userId = resourcePath.split('/')[1];
+                const {username, firstName, lastName, email} = JSON.parse(representation);
+                await userService.AddUser(userId, username, email, firstName, lastName);
+            } else {
+                const {username, first_name, last_name, email} = details;
+                await userService.AddUser(userId, username, email, first_name, last_name);
+            }
         }, {noAck: true});
     }
 
