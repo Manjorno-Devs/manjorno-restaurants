@@ -16,12 +16,12 @@ class RestaurantController{
 
             const {name, contacts, locationLink} = req.body;
 
-            const response = await restaurant.CreateRestaurant(userId, username, name, contacts, locationLink);
-
             if (!name || !locationLink) {
                 res.status(400).json({"response":"Insufficient data provided!"});
                 return;
             }
+
+            const response = await restaurant.CreateRestaurant(userId, username, name, contacts, locationLink);
 
             if (response === "Restaurant already exists") {
                 res.status(409).json({response});
